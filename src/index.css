@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* tunable variables for pixel-perfect control */
+:root{
+  --news-height: 36px;        /* change if you need micro tuning */
+  --news-bg: #3a3a3a;
+  --news-divider: #4a4a4a;
+  --news-text: #ffffff;
+  --news-accent: #ff7a1a;
+  --news-font-size: 14px;
+}
+
+/* small square icon box */
+.news-icon-box {
+  width: 28px;
+  height: 24px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ensure marquee children align center */
+.news-marquee-item { display:flex; align-items:center; gap:8px; }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* BLINK ANIMATION */
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  animation: blink 1s infinite;
+}
+
+/* exact inset shadow to match screenshot */
+.nav-inset-shadow {
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 0px 0px inset;
+}
+
+/* hide scrollbar but keep horizontal scrollable */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* small badge basic */
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #fff;
+  background: #ef3b2b; /* red for count badges */
+  box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+/* pill live badge */
+.nav-badge-pill {
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-size: 12px;
+  background: #ff3b1a; /* slightly bright for live pill */
+}
+
+/* circular count badge */
+.nav-badge-count {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  font-size: 11px;
+  padding: 0;
+}
+
+/* small subtle separator line color (matches screenshot feel) */
+.nav-sep {
+  background-color: rgba(0,0,0,0.15);
+}
+
+/* ensure items truncate nicely */
+.nav-item-text {
+  display: inline-block;
+  max-width: 150px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+/* ---------- exact visual helpers (paste after @tailwind directives) ---------- */
+
+/* header background and thin top border feel */
+.bg-header-light { background: #efefef; }
+
+/* divider between rows */
+.divide-y > * + * { border-top: 1px solid #dcdcdc; }
+
+/* small live dot & shadow handled by Indicator component */
+
+/* odds boxes exact sizing already in inline Tailwind classes, but keep helpers if needed */
+.cricket-match-sc { min-width: 46px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 4px; margin-right: 4px; }
+.bg-table-1 { background: #7ec3ff; color: #003049; }
+.bg-table-2 { background: #ffb6c1; color: #4b2a2a; }
+
+/* icons wrapper */
+.btn-icon-wrapp ul { display: flex; margin: 0; padding: 0; list-style: none; }
+.btn-icon-wrapp ul li { margin-right: 6px; }
+
+/* ensure same font-sizes as screenshot */
+.text-match-title { font-size: 14px; font-weight: 600; }
+.text-match-time { font-size: 13px; }
+
+/* responsive tweaks to match spacing */
+/* @media (min-width: 768px) {
+  .md\\:w-6\\/12 { width: 50%; }
+  .md\\:w-5\\/12 { width: 41.666667%; }
+  .md\\:w-1\\/12 { width: 8.333333%; }
+} */
+
+/* small utility to keep the row heights consistent */
+.row-fixed-height > * { padding-top: 12px; padding-bottom: 12px; }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.8s ease-out;
+}
+
