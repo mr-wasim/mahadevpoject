@@ -19,12 +19,10 @@ function formatSchedule(startISO) {
 }
 
 /**
- * Pixel-perfect, compact MatchList
- * - Keeps all content identical (no text/content changes)
- * - Forces a single-line layout (left: team/info, middle: boxes grid, right: pin)
- * - Mobile + Tablet: two main sections visible on one line (compact), boxes show 3-per-row
- * - Desktop: retains previous wide-layout behavior (6 boxes in a row)
- * - Page-level scroller applied (full-height, vertical scroll)
+ * MatchList — Pixel-tight layout for mobile/tablet (desktop unchanged)
+ * - Left: team + meta
+ * - Right: odds boxes (3x2 on mobile/tablet, 6 in-row on desktop)
+ * - Keeps textual content identical
  */
 function MatchList({ filterSport = "cricket", isDemo = true }) {
   const [rows, setRows] = useState([]);
@@ -39,13 +37,14 @@ function MatchList({ filterSport = "cricket", isDemo = true }) {
           id: `cricket-1`,
           sport: "cricket",
           status: "live",
-          teamA: "Dubai Royals",
-          teamB: "Pune Panthers",
+          teamA: "India U19",
+          teamB: "Pakistan U19",
           startTime: nowISO,
           inPlayLabel: "In-Play",
           icons: [{ href: "#", src: "/vid-1.jpg", alt: "video" }, { href: "#", src: "/icon--4.jpg", alt: "stats" }],
-          odds: ["1.25", "3.60", "-", "-", "2.05", "4.10"],
+          odds: ["1.37", "-", "3.50", "1.42", "-", "3.80"],
         },
+        // additional demo rows (same structure)
         {
           id: `cricket-2`,
           sport: "cricket",
@@ -57,8 +56,8 @@ function MatchList({ filterSport = "cricket", isDemo = true }) {
           icons: [{ href: "#", src: "/vid-2.jpg", alt: "video" }],
           odds: ["0.00", "0.00", "-", "-", "0.00", "0.00"],
         },
-        {
-          id: `cricket-3`,
+         {
+          id: `cricket-2`,
           sport: "cricket",
           status: "upcoming",
           teamA: "Mumbai Kings",
@@ -68,8 +67,8 @@ function MatchList({ filterSport = "cricket", isDemo = true }) {
           icons: [{ href: "#", src: "/vid-2.jpg", alt: "video" }],
           odds: ["0.00", "0.00", "-", "-", "0.00", "0.00"],
         },
-        {
-          id: `cricket-4`,
+         {
+          id: `cricket-2`,
           sport: "cricket",
           status: "upcoming",
           teamA: "Mumbai Kings",
@@ -90,28 +89,18 @@ function MatchList({ filterSport = "cricket", isDemo = true }) {
           icons: [{ href: "#", src: "/icon--4.jpg", alt: "stats" }],
           odds: ["2.10", "3.00", "-", "-", "2.90", "6.50"],
         },
-        {
-          id: `tennis-1`,
-          sport: "tennis",
-          status: "upcoming",
-          teamA: "Player A",
-          teamB: "Player B",
-          startTime: laterISO,
-          inPlayLabel: "Pre-match",
-          icons: [],
-          odds: ["1.80", "2.05", "-", "-", "0.00", "0.00"],
-        },
       ];
 
       const t = setTimeout(() => setRows(demoRows), 120);
       return () => clearTimeout(t);
+    } else {
+      // replace with real fetch if needed
     }
   }, [isDemo]);
 
   const filtered = useMemo(() => rows.filter((r) => r.sport === filterSport), [rows, filterSport]);
 
   return (
-    // full page scroller — ensures main page scrolls vertically (requirement 6)
     <div className="overflow-y-auto bg-white">
       <ScorebordTitleHeading />
 
@@ -126,37 +115,52 @@ function MatchList({ filterSport = "cricket", isDemo = true }) {
           ) : (
             <div className="divide-y divide-[#dcdcdc]">
               {filtered.map((r) => (
-                // NOTE: single-line layout for every viewport. Compact spacing + smaller fonts for pixel-perfect tight layout.
                 <div
                   key={r.id}
                   className="flex items-center justify-between gap-2 hover:bg-[#fafafa] transition px-1 py-2 md:py-3"
-                  style={{ alignItems: 'center' }}
                 >
-                  {/* LEFT — team + small meta (keeps content identical) */}
-                  <div className="flex items-center gap-3 min-w-0 w-[55%] md:w-6/12">
-                    <Suspense fallback={<span className="w-[8px] h-[8px] rounded-full bg-[#9e9e9e]" />}>
-                      <Indicator status={r.status} />
+                  {/* LEFT: Team + meta */}
+                  <div className="flex items-start gap-3 min-w-0 w-[56%] sm:w-[58%] md:w-6/12">
+                    <Suspense fallback={<span className="w-[10px] h-[10px] rounded-full bg-[#9e9e9e]" />}>
+                      <div className="pt-[2px]">
+                        <Indicator status={r.status} />
+                      </div>
                     </Suspense>
 
                     <div className="min-w-0 flex flex-col justify-center">
                       <a
                         href="#"
                         onClick={(e) => e.preventDefault()}
-                        className="text-[#0066ff] font-semibold text-[13px] leading-4 hover:underline truncate"
+                        className="text-[#0a4ea8] font-semibold text-[13px] leading-5 hover:underline truncate"
                         title={`${r.teamA} v ${r.teamB}`}
                       >
                         {r.teamA} v {r.teamB}
                       </a>
 
                       <div className="mt-1 flex items-center gap-2 flex-wrap text-[12px] text-[#444]">
-                        <span className={`font-medium ${r.status === "live" ? "text-[#27ae60]" : "text-[#999]"}`}>{r.inPlayLabel}</span>
+                        {/* green dot + in-play label */}
+                        <span className="inline-flex items-center gap-2">
+                          <span
+                            className={`inline-block w-[8px] h-[8px] rounded-full ${r.status === "live" ? "bg-[#2ecc71]" : "bg-[#999]"}`}
+                          />
+                          <span className={`font-medium ${r.status === "live" ? "text-[#27ae60]" : "text-[#999]"}`}>{r.inPlayLabel}</span>
+                        </span>
+
+                        {/* time */}
                         <span className="text-[#444] truncate">{formatSchedule(r.startTime)}</span>
 
+                        {/* small icons */}
                         <ul className="flex items-center gap-2 ml-1">
                           {r.icons.map((ic, i) => (
                             <li key={i}>
                               <a href={ic.href} onClick={(e) => e.preventDefault()}>
-                                <img src={ic.src} alt={ic.alt} loading="lazy" decoding="async" className="h-[14px] w-[14px] object-cover rounded-sm" />
+                                <img
+                                  src={ic.src}
+                                  alt={ic.alt}
+                                  loading="lazy"
+                                  decoding="async"
+                                  className="h-[14px] w-[14px] object-cover rounded-sm"
+                                />
                               </a>
                             </li>
                           ))}
@@ -165,22 +169,30 @@ function MatchList({ filterSport = "cricket", isDemo = true }) {
                     </div>
                   </div>
 
-                  {/* MIDDLE — boxes (odds) */}
-                  {/* Requirement: display boxes in a row but on mobile/tablet show 3 per row. Desktop (md+) show 6 in a row as before. */}
-                  <div className="w-[42%] md:w-5/12 px-1">
+                  {/* RIGHT: Odds boxes */}
+                  <div className="w-[42%] sm:w-[40%] md:w-5/12 px-1 min-w-0">
+                    {/* Mobile/Tablet: 3 columns x 2 rows; Desktop md+: 6 columns single row */}
                     <div className="grid grid-cols-3 md:grid-cols-6 gap-2 justify-items-center items-center">
-                      {r.odds.map((o, i) => (
-                        <div key={i} className="h-9 w-full flex items-center justify-center text-[13px] select-none font-bold rounded-sm overflow-hidden"
-                          aria-hidden>
-                          <div className={`w-full h-full flex items-center justify-center text-[13px] font-bold select-none rounded-sm ${i % 2 === 0 ? "bg-[#7ec3ff] text-[#003049]" : "bg-[#ffb6c1] text-[#4b2a2a]"}`}>
-                            {o}
+                      {r.odds.map((o, i) => {
+                        // First 3 -> blue top row, Next 3 -> pink bottom row (matches image)
+                        const isTopRow = i < 3;
+                        const boxBg = isTopRow ? "bg-[#72bbef] text-black font-bold" : "bg-[#faa9ba] text-black font-bold";
+                        return (
+                          <div
+                            key={i}
+                            className="h-[36px] w-full md:w-full flex items-center justify-center select-none font-bold text-[13px] rounded-sm overflow-hidden"
+                            aria-hidden
+                          >
+                            <div className={`w-full h-full flex items-center justify-center text-[13px] font-bold select-none rounded-sm ${boxBg}`}>
+                              {o}
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
 
-                  {/* RIGHT — pin icon */}
+                  {/* PIN BUTTON */}
                   <div className="w-auto flex items-center justify-center px-1">
                     <button
                       className="w-[28px] h-[28px] rounded-full border border-[#cfcfcf] flex items-center justify-center hover:bg-[#f1f1f1] transition"

@@ -34,4 +34,4 @@ export const calculateBetValues = (placedBets, eventId, opt) => {
     );
 
   return Number(total).toFixed(0);
-};
+};   
